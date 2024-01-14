@@ -6,6 +6,8 @@ import {
   createAxiosConfig,
 } from "../commonFunction";
 import { baseUrl } from "../baseUrl";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 const initialState = {
   // get employee table data
@@ -151,7 +153,6 @@ export const employeeTableSlice = createSlice({
         state.isError = false;
         state.error = "";
         state.isSuccess = true;
-
         // console.log("Inside fulfilled payload", action.meta.arg)
       })
       .addCase(getEmployeeTableData.rejected, (state, action) => {
@@ -160,7 +161,7 @@ export const employeeTableSlice = createSlice({
         state.data = [];
         state.isLoading = false;
         state.isError = true;
-        state.error = action.error.message;
+        state.error = action.error.message == "Invalid Token" ? <div>{action.error.message} <Link href="/login">Please login again</Link></div>: action.error.message;
         state.isSuccess = false;
 
         // console.log("Inside error payload", action.meta.arg)
@@ -190,7 +191,7 @@ export const employeeTableSlice = createSlice({
         state.employeeProfileData = {};
         state.employeeProfileIsLoading = false;
         state.employeeProfileIsError = true;
-        state.employeeProfileError = action.error.message;
+        state.employeeProfileError = action.error.message == "Invalid Token" ? <div>{action.error.message} <Link href="/login">Please login again</Link></div>: action.error.message;
         state.employeeProfileIsSuccess = false;
 
         // console.log("Inside error payload", action.meta.arg)
