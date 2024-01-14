@@ -32,7 +32,9 @@ export default function App({ Component, pageProps }) {
         <div>
           <Sidebar />
         </div>
-        <Component {...pageProps} />
+        <div style={{ width: "100%" }}>
+          <Component {...pageProps} />
+        </div>
       </div>
       <ToastContainer />
     </Provider>
