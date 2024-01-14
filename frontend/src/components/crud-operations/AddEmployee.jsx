@@ -73,7 +73,7 @@ const AddEmployee = (props) => {
     const payload = {
       data: inputdata,
       handleAddEmployeeClose,
-      employeeData,
+      dispatchActionPayload: employeeData,
       setPage,
     };
 

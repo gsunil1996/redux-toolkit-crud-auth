@@ -90,7 +90,7 @@ const EditEmployee = (props) => {
     const payload = {
       data: inputdata,
       handleEditEmployeeClose,
-      employeeData,
+      dispatchActionPayload: employeeData,
       tableRowId,
     };
 

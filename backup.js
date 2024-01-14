@@ -32,25 +32,36 @@ export const refreshAccessToken = async (thunkAPI) => {
 export const createAsyncThunkWithTokenRefresh = (
   type,
   requestFunction,
-  dispatchAction
+  dispatchAction,
+  requestPayloadMapper,
+  dispatchPayloadMapper
 ) =>
   createAsyncThunk(`${type}`, async (payload, thunkAPI) => {
     try {
       // Get the token from the session storage
       const token = sessionStorage.getItem("token");
 
-      // Make the initial request using the provided function and token
-      const response = await requestFunction(token, payload);
+      const requestPayload = requestPayloadMapper
+        ? requestPayloadMapper(payload)
+        : payload;
 
-      if (dispatchAction) {
-        if (payload.dispatchActionPayload) {
-          await thunkAPI.dispatch(
-            dispatchAction(payload.dispatchActionPayload)
-          );
-        } else {
-          // Dispatch the action without any payload
-          await thunkAPI.dispatch(dispatchAction());
-        }
+      console.log("Payload request", requestPayload);
+
+      // Make the initial request using the provided function and token
+      const response = await requestFunction(token, requestPayload);
+
+      const dispatchPayload = dispatchPayloadMapper
+        ? dispatchPayloadMapper(payload)
+        : undefined;
+
+      console.log("checkDispatch", dispatchPayload, dispatchAction);
+
+      if (dispatchPayload !== undefined && dispatchAction) {
+        // Dispatch the action with dispatchPayload
+        await thunkAPI.dispatch(dispatchAction(dispatchPayload));
+      } else if (dispatchAction) {
+        // Dispatch the action without any payload
+        await thunkAPI.dispatch(dispatchAction());
       }
 
       // Return the response data
@@ -92,20 +103,25 @@ export const createAsyncThunkWithTokenRefresh = (
         } else if (refreshedToken?.token) {
           // If token refresh is successful, retry the original request with the new access token
           try {
+            const requestPayload = requestPayloadMapper
+              ? requestPayloadMapper(payload)
+              : payload;
+
             const retryResponse = await requestFunction(
               refreshedToken?.token,
-              payload
+              requestPayload
             );
 
-            if (dispatchAction) {
-              if (payload.dispatchActionPayload) {
-                await thunkAPI.dispatch(
-                  dispatchAction(payload.dispatchActionPayload)
-                );
-              } else {
-                // Dispatch the action without any payload
-                await thunkAPI.dispatch(dispatchAction());
-              }
+            const dispatchPayload = dispatchPayloadMapper
+              ? dispatchPayloadMapper(payload)
+              : undefined;
+
+            if (dispatchPayload !== undefined && dispatchAction) {
+              // Dispatch the action with dispatchPayload
+              await thunkAPI.dispatch(dispatchAction(dispatchPayload));
+            } else if (dispatchAction) {
+              // Dispatch the action without any payload
+              await thunkAPI.dispatch(dispatchAction());
             }
 
             // Return the response data from the retry

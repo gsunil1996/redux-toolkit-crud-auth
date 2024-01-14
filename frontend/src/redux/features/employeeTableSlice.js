@@ -5,6 +5,7 @@ import {
   createAsyncThunkWithTokenRefresh,
   createAxiosConfig,
 } from "../commonFunction";
+import { baseUrl } from "../baseUrl";
 
 const initialState = {
   // get employee table data
@@ -48,9 +49,11 @@ export const getEmployeeTableData = createAsyncThunkWithTokenRefresh(
   async (token, payload) => {
     const { search, gender, status, sort, page } = payload;
     const headers = {}; // Adjust the value as needed
-    return axios.get(
-      `http://localhost:5000/employeesTable?search=${search}&gender=${gender}&status=${status}&sort=${sort}&page=${page}`,
-      createAxiosConfig(token, headers)
+    return (
+      axios.get(
+        `${baseUrl}/employeesTable?search=${search}&gender=${gender}&status=${status}&sort=${sort}&page=${page}`,
+        createAxiosConfig(token, headers)
+      ),
     );
   }
 );
@@ -60,69 +63,51 @@ export const getEmployeeProfileData = createAsyncThunkWithTokenRefresh(
   async (token, payload) => {
     const headers = {}; // Adjust the value as needed
     return axios.get(
-      `http://localhost:5000/employeesTable/${payload.id}`,
+      `${baseUrl}/employeesTable/${payload.id}`,
       createAxiosConfig(token, headers)
     );
   }
 );
 
-export const addEmployeeTableData = createAsyncThunk(
+
+export const addEmployeeTableData = createAsyncThunkWithTokenRefresh(
   "employeeTable/addEmployeeTableData",
-  async (payload, thunkAPI) => {
-    try {
-      const { data, employeeData } = payload;
-
-      const response = await axios.post(
-        `http://localhost:5000/addEmployee`,
-        data
-      );
-
-      thunkAPI.dispatch(getEmployeeTableData(employeeData));
-
-      return response.data;
-    } catch (error) {
-      throw new Error(error.response.data.error);
-    }
-  }
+  async (token, payload) => {
+    const headers = {}; // Adjust the value as needed
+    return axios.post(
+      `${baseUrl}/addEmployee`,
+      payload.data,
+      createAxiosConfig(token, headers)
+    )
+  },
+   getEmployeeTableData,
 );
 
-export const editEmployeeTableData = createAsyncThunk(
+export const editEmployeeTableData = createAsyncThunkWithTokenRefresh(
   "employeeTable/editEmployeeTableData",
-  async (payload, thunkAPI) => {
-    try {
-      const { tableRowId, data, employeeData } = payload;
-
-      const response = await axios.patch(
-        `http://localhost:5000/updateEmployeeDetails/${tableRowId}`,
-        data
-      );
-
-      thunkAPI.dispatch(getEmployeeTableData(employeeData));
-
-      return response.data;
-    } catch (error) {
-      throw new Error(error.response.data.error);
-    }
-  }
+  async (token, payload) => {
+    const { tableRowId, data } = payload;
+    const headers = {}; // Adjust the value as needed
+    return axios.patch(
+      `${baseUrl}/updateEmployeeDetails/${tableRowId}`,
+      data,
+      createAxiosConfig(token, headers)
+    )
+  },
+   getEmployeeTableData,
 );
 
-export const deleteEmployeeTableData = createAsyncThunk(
+export const deleteEmployeeTableData = createAsyncThunkWithTokenRefresh(
   "employeeTable/deleteEmployeeTableData",
-  async (payload, thunkAPI) => {
-    try {
-      const { tableRowId, employeeData } = payload;
-
-      const response = await axios.delete(
-        `http://localhost:5000/deleteEmployee/${tableRowId}`
-      );
-
-      thunkAPI.dispatch(getEmployeeTableData(employeeData));
-
-      return response.data;
-    } catch (error) {
-      throw new Error(error.response.data.error);
-    }
-  }
+  async (token, payload) => {
+    const { tableRowId } = payload;
+    const headers = {}; // Adjust the value as needed
+    return axios.delete(
+      `${baseUrl}/deleteEmployee/${tableRowId}`,
+      createAxiosConfig(token, headers)
+    )
+  },
+   getEmployeeTableData,
 );
 
 export const employeeTableSlice = createSlice({

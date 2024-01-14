@@ -42,7 +42,7 @@ const DeleteEmployee = (props) => {
     const payload = {
       tableRowId,
       handleDeleteEmployeeClose,
-      employeeData,
+      dispatchActionPayload: employeeData,
       setPage,
       page,
     };
