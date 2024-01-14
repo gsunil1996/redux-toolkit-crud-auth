@@ -38,11 +38,13 @@ const login = async (req, res) => {
     }
     const token = jwt.sign(
       { _id: user._id, username: user.username },
-      process.env.JWT_SECRET
+      process.env.JWT_SECRET,
+      { expiresIn: "15m" }
     );
     const refreshToken = jwt.sign(
       { _id: user._id, username: user.username },
-      process.env.JWT_REFRESH_SECRET
+      process.env.JWT_REFRESH_SECRET,
+      { expiresIn: "1d" }
     );
     const { password: _, ...rest } = user._doc;
     return res.status(201).send({ user: rest, token, refreshToken });
@@ -56,7 +58,8 @@ const refresh = async (req, res) => {
     const { user } = req;
     const token = jwt.sign(
       { _id: user._id, username: user.username },
-      process.env.JWT_SECRET
+      process.env.JWT_SECRET,
+      { expiresIn: "15m" }
     );
     return res.status(201).send({ token });
   } catch (err) {

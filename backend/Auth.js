@@ -8,11 +8,16 @@ const Auth = async (req, res, next) => {
       ? process.env.JWT_REFRESH_SECRET
       : process.env.JWT_SECRET;
     jwt.verify(token.split(" ")[1], jwtSecret, (err, user) => {
-      if (err && err?.message === "TokenExpiredError") {
-        return res.status(403).send({ error: "token expired" });
-      }
       if (err) {
-        return res.status(401).send({ error: "Invalid Token" });
+        console.log(err?.message);
+        return res
+          .status(401)
+          .send({
+            error:
+              err.message == "jwt expired"
+                ? "Token Expired Please login again"
+                : "Invalid Token",
+          });
       }
       req.user = user;
       next();

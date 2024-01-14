@@ -69,11 +69,7 @@ export const createAsyncThunkWithTokenRefresh = (
         }
 
         // Check if the server is stopped with a 500 error and no specific error message after token refresh
-        if (
-          refreshedToken.response &&
-          refreshedToken.response.status === 500 &&
-          !refreshedToken.response.data.message
-        ) {
+        if (refreshedToken.response && !refreshedToken.response.data.message) {
           throw new Error(
             "There was an error with the internal server. Please contact your site administrator."
           );
