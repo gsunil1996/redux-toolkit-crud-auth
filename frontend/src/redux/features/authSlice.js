@@ -315,25 +315,3 @@ export const {
 } = authSlice.actions;
 
 export default authSlice.reducer;
-
-// login
-export const loginData = (state) => state.auth.loginData;
-
-export const loginIsLoading = (state) => state.auth.loginIsLoading;
-
-export const loginIsError = (state) => state.auth.loginIsError;
-
-export const loginError = (state) => state.auth.loginError;
-
-export const loginIsSuccess = (state) => state.auth.loginIsSuccess;
-
-// refresh
-export const refreshData = (state) => state.auth.refreshData;
-
-export const refreshIsLoading = (state) => state.auth.refreshIsLoading;
-
-export const refreshIsError = (state) => state.auth.refreshIsError;
-
-export const refreshError = (state) => state.auth.refreshError;
-
-export const refreshIsSuccess = (state) => state.auth.refreshIsSuccess;
