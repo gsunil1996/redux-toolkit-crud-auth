@@ -1,6 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toast } from "react-toastify";
+import {
+  createAsyncThunkWithTokenRefresh,
+  createAxiosConfig,
+} from "../commonFunction";
 
 const initialState = {
   // get employee table data
@@ -39,34 +43,26 @@ const initialState = {
   employeeDeleteDataIsSuccess: false,
 };
 
-export const getEmployeeTableData = createAsyncThunk(
+export const getEmployeeTableData = createAsyncThunkWithTokenRefresh(
   "employeeTable/getEmployeeTableData",
-  async (payload) => {
-    try {
-      const { search, gender, status, sort, page } = payload;
-      const { data } = await axios.get(
-        `http://localhost:5000/employeesTable?search=${search}&gender=${gender}&status=${status}&sort=${sort}&page=${page}`
-      );
-
-      return data;
-    } catch (error) {
-      throw new Error(error.response.data.error);
-    }
+  async (token, payload) => {
+    const { search, gender, status, sort, page } = payload;
+    const headers = {}; // Adjust the value as needed
+    return axios.get(
+      `http://localhost:5000/employeesTable?search=${search}&gender=${gender}&status=${status}&sort=${sort}&page=${page}`,
+      createAxiosConfig(token, headers)
+    );
   }
 );
 
-export const getEmployeeProfileData = createAsyncThunk(
+export const getEmployeeProfileData = createAsyncThunkWithTokenRefresh(
   "employeeTable/getEmployeeProfileData",
-  async ({ id }) => {
-    try {
-      const { data } = await axios.get(
-        `http://localhost:5000/employeesTable/${id}`
-      );
-
-      return data;
-    } catch (error) {
-      throw new Error(error.response.data.error);
-    }
+  async (token, payload) => {
+    const headers = {}; // Adjust the value as needed
+    return axios.get(
+      `http://localhost:5000/employeesTable/${payload.id}`,
+      createAxiosConfig(token, headers)
+    );
   }
 );
 

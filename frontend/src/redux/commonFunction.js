@@ -69,7 +69,7 @@ export const createAsyncThunkWithTokenRefresh = (
         }
 
         // Check if the server is stopped with a 500 error and no specific error message after token refresh
-        if (refreshedToken.response && !refreshedToken.response.data.message) {
+        if (refreshedToken.response && !refreshedToken.response.data.error) {
           throw new Error(
             "There was an error with the internal server. Please contact your site administrator."
           );
@@ -81,18 +81,12 @@ export const createAsyncThunkWithTokenRefresh = (
           refreshedToken.response?.status === 401
         ) {
           // Manually set an error in the Redux state
-          if (
-            refreshedToken.response?.data?.message == "Invalid Refresh Token!!"
-          ) {
-            throw new Error("Your login has been expired");
-          } else {
-            throw new Error(refreshedToken.response?.data?.message);
-          }
-        } else if (refreshedToken?.access_token) {
+          throw new Error(refreshedToken.response?.data?.error);
+        } else if (refreshedToken?.token) {
           // If token refresh is successful, retry the original request with the new access token
           try {
             const retryResponse = await requestFunction(
-              refreshedToken?.access_token,
+              refreshedToken?.token,
               payload
             );
 
