@@ -1,5 +1,7 @@
+import PersistLogin from "@/components/PersistLogin";
+
 const Index = () => {
-  return <div>Crud Operations</div>;
+  return <PersistLogin>Crud Operations</PersistLogin>;
 };
 
 export default Index;

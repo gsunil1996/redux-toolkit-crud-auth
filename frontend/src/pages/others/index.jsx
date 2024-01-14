@@ -1,8 +1,9 @@
+import PersistLogin from '@/components/PersistLogin'
 import React from 'react'
 
 const Index = () => {
   return (
-    <div>Index</div>
+    <PersistLogin>Index</PersistLogin>
   )
 }
 
