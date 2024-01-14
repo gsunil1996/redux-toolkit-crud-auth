@@ -52,7 +52,7 @@ const Login = () => {
   };
 
   useEffect(() => {
-    // sessionStorage.clear();
+    sessionStorage.clear();
     dispatch(resetRefreshction());
     dispatch(resetCheckTokenValidtyAction());
     dispatch(resetRegisterAction());
@@ -62,6 +62,7 @@ const Login = () => {
     if (loginIsSuccess) {
       toast("login Successful", { autoClose: 2000, type: "success" });
       dispatch(resetLoginAction());
+      router.push("/crud-operations")
     } else if (loginIsError) {
       toast(loginError, { autoClose: 2000, type: "error" });
       dispatch(resetLoginAction());
