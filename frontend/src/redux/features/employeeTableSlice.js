@@ -51,11 +51,9 @@ export const getEmployeeTableData = createAsyncThunkWithTokenRefresh(
   async (token, payload) => {
     const { search, gender, status, sort, page } = payload;
     const headers = {}; // Adjust the value as needed
-    return (
-      axios.get(
-        `${baseUrl}/employeesTable?search=${search}&gender=${gender}&status=${status}&sort=${sort}&page=${page}`,
-        createAxiosConfig(token, headers)
-      ),
+    return axios.get(
+      `${baseUrl}/employeesTable?search=${search}&gender=${gender}&status=${status}&sort=${sort}&page=${page}`,
+      createAxiosConfig(token, headers)
     );
   }
 );
@@ -71,7 +69,6 @@ export const getEmployeeProfileData = createAsyncThunkWithTokenRefresh(
   }
 );
 
-
 export const addEmployeeTableData = createAsyncThunkWithTokenRefresh(
   "employeeTable/addEmployeeTableData",
   async (token, payload) => {
@@ -80,9 +77,9 @@ export const addEmployeeTableData = createAsyncThunkWithTokenRefresh(
       `${baseUrl}/addEmployee`,
       payload.data,
       createAxiosConfig(token, headers)
-    )
+    );
   },
-   getEmployeeTableData,
+  getEmployeeTableData
 );
 
 export const editEmployeeTableData = createAsyncThunkWithTokenRefresh(
@@ -94,9 +91,9 @@ export const editEmployeeTableData = createAsyncThunkWithTokenRefresh(
       `${baseUrl}/updateEmployeeDetails/${tableRowId}`,
       data,
       createAxiosConfig(token, headers)
-    )
+    );
   },
-   getEmployeeTableData,
+  getEmployeeTableData
 );
 
 export const deleteEmployeeTableData = createAsyncThunkWithTokenRefresh(
@@ -107,9 +104,9 @@ export const deleteEmployeeTableData = createAsyncThunkWithTokenRefresh(
     return axios.delete(
       `${baseUrl}/deleteEmployee/${tableRowId}`,
       createAxiosConfig(token, headers)
-    )
+    );
   },
-   getEmployeeTableData,
+  getEmployeeTableData
 );
 
 export const employeeTableSlice = createSlice({
@@ -161,7 +158,15 @@ export const employeeTableSlice = createSlice({
         state.data = [];
         state.isLoading = false;
         state.isError = true;
-        state.error = action.error.message == "Invalid Token" ? <div>{action.error.message} <Link href="/login">Please login again</Link></div>: action.error.message;
+        state.error =
+          action.error.message == "Invalid Token" ? (
+            <div>
+              {action.error.message}{" "}
+              <Link href="/login">Please login again</Link>
+            </div>
+          ) : (
+            action.error.message
+          );
         state.isSuccess = false;
 
         // console.log("Inside error payload", action.meta.arg)
@@ -191,7 +196,15 @@ export const employeeTableSlice = createSlice({
         state.employeeProfileData = {};
         state.employeeProfileIsLoading = false;
         state.employeeProfileIsError = true;
-        state.employeeProfileError = action.error.message == "Invalid Token" ? <div>{action.error.message} <Link href="/login">Please login again</Link></div>: action.error.message;
+        state.employeeProfileError =
+          action.error.message == "Invalid Token" ? (
+            <div>
+              {action.error.message}{" "}
+              <Link href="/login">Please login again</Link>
+            </div>
+          ) : (
+            action.error.message
+          );
         state.employeeProfileIsSuccess = false;
 
         // console.log("Inside error payload", action.meta.arg)
