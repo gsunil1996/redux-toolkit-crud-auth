@@ -73,7 +73,7 @@ export const addEmployeeTableData = createAsyncThunkWithTokenRefresh(
     const headers = {}; // Adjust the value as needed
     return axios.post(
       `${baseUrl}/addEmployee`,
-      payload.data,
+      payload,
       createAxiosConfig(token, headers)
     );
   }
