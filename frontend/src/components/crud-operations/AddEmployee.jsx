@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import Slide from "@mui/material/Slide";
@@ -13,7 +13,8 @@ import Select from "@mui/material/Select";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useDispatch, useSelector } from "react-redux";
-import { addEmployeeTableData } from "@/redux/features/employeeTableSlice";
+import { addEmployeeTableData, getEmployeeTableData, resetAddEmployee } from "@/redux/features/employeeTableSlice";
+import { toast } from "react-toastify";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -70,14 +71,19 @@ const AddEmployee = (props) => {
       page: 1,
     };
 
-    const payload = {
-      data: inputdata,
-      handleAddEmployeeClose,
-      dispatchActionPayload: employeeData,
-      setPage,
-    };
-
-    dispatch(addEmployeeTableData(payload));
+    dispatch(addEmployeeTableData(inputdata)).then(() => {
+      handleAddEmployeeClose();
+      setPage(1);
+      localStorage.setItem("page", "1");
+      toast("User Added Successully", { autoClose: 2000, type: "success" });
+      dispatch(resetAddEmployee())
+      dispatch(getEmployeeTableData(employeeData));
+    })
+      .catch((error) => {
+        // console.log("checking now", error.message)
+        toast(error.message, { autoClose: 2000, type: "error" });
+        dispatch(resetAddEmployee())
+      });
   };
 
   return (

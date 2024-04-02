@@ -29,29 +29,14 @@ export const refreshAccessToken = async (thunkAPI) => {
 };
 
 // Create an async thunk with token refresh functionality
-export const createAsyncThunkWithTokenRefresh = (
-  type,
-  requestFunction,
-  dispatchAction
-) =>
+export const createAsyncThunkWithTokenRefresh = (type, requestFunction) =>
   createAsyncThunk(`${type}`, async (payload, thunkAPI) => {
     try {
-      // Get the token from the session storage
+      // Get the token from the local storage
       const token = localStorage.getItem("token");
 
       // Make the initial request using the provided function and token
       const response = await requestFunction(token, payload);
-
-      if (dispatchAction) {
-        if (payload.dispatchActionPayload) {
-          await thunkAPI.dispatch(
-            dispatchAction(payload.dispatchActionPayload)
-          );
-        } else {
-          // Dispatch the action without any payload
-          await thunkAPI.dispatch(dispatchAction());
-        }
-      }
 
       // Return the response data
       return response.data;
@@ -59,6 +44,12 @@ export const createAsyncThunkWithTokenRefresh = (
       // Check for gateway timeout error
       if (error.response && error.response.status === 504) {
         throw new Error("Gateway Timeout");
+      } else if (error.response && error.response.status === 404) {
+        throw new Error("Resource not found");
+      } else if (error.response && error.response.status === 500) {
+        throw new Error(
+          "There was an error with the internal server. Please contact your site administrator."
+        );
       } else if (error.response && !error.response.data.error) {
         throw new Error(
           "There was an error with the internal server. Please contact your site administrator."
@@ -73,10 +64,24 @@ export const createAsyncThunkWithTokenRefresh = (
         // Check for gateway timeout error after token refresh
         if (refreshedToken.response && refreshedToken.response.status === 504) {
           throw new Error("Gateway Timeout");
+        } else if (
+          refreshedToken.response &&
+          refreshedToken.response.status === 404
+        ) {
+          throw new Error("Resource not found");
+        } else if (
+          refreshedToken.response &&
+          refreshedToken.response.status === 500
+        ) {
+          throw new Error(
+            "There was an error with the internal server. Please contact your site administrator."
+          );
         }
-
         // Check if the server is stopped with a 500 error and no specific error message after token refresh
-        if (refreshedToken.response && !refreshedToken.response.data.error) {
+        else if (
+          refreshedToken.response &&
+          !refreshedToken.response.data.error
+        ) {
           throw new Error(
             "There was an error with the internal server. Please contact your site administrator."
           );
@@ -97,17 +102,6 @@ export const createAsyncThunkWithTokenRefresh = (
               payload
             );
 
-            if (dispatchAction) {
-              if (payload.dispatchActionPayload) {
-                await thunkAPI.dispatch(
-                  dispatchAction(payload.dispatchActionPayload)
-                );
-              } else {
-                // Dispatch the action without any payload
-                await thunkAPI.dispatch(dispatchAction());
-              }
-            }
-
             // Return the response data from the retry
             return retryResponse.data;
           } catch (error) {
@@ -120,6 +114,18 @@ export const createAsyncThunkWithTokenRefresh = (
             refreshedToken.response?.data?.error || "Token refresh failed"
           );
         }
+      }
+
+      if (error.message == "Network Error") {
+        throw new Error(
+          "There was an error with the internal server. Please contact your site administrator."
+        );
+      }
+
+      if (!error.response) {
+        throw new Error(
+          "There was an error with the internal server. Please contact your site administrator."
+        );
       }
 
       // Throw a generic error if none of the specific error conditions are met

@@ -14,7 +14,8 @@ import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useDispatch, useSelector } from "react-redux";
-import { editEmployeeTableData } from "@/redux/features/employeeTableSlice";
+import { editEmployeeTableData, getEmployeeTableData, resetEditEmployee } from "@/redux/features/employeeTableSlice";
+import { toast } from "react-toastify";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -89,12 +90,23 @@ const EditEmployee = (props) => {
 
     const payload = {
       data: inputdata,
-      handleEditEmployeeClose,
-      dispatchActionPayload: employeeData,
       tableRowId,
     };
 
-    dispatch(editEmployeeTableData(payload));
+    dispatch(editEmployeeTableData(payload)).then(() => {
+      handleEditEmployeeClose();
+      toast("User Edited Successully", {
+        autoClose: 2000,
+        type: "success",
+      });
+      dispatch(resetEditEmployee())
+      dispatch(getEmployeeTableData(employeeData))
+    })
+      .catch((error) => {
+        // console.log("checking now", error.message)
+        toast(error.message, { autoClose: 2000, type: "error" });
+        dispatch(resetEditEmployee())
+      });
   };
 
   useEffect(() => {

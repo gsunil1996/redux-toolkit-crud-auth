@@ -5,7 +5,8 @@ import Slide from "@mui/material/Slide";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteEmployeeTableData } from "@/redux/features/employeeTableSlice";
+import { deleteEmployeeTableData, getEmployeeTableData, resetDeleteEmployee } from "@/redux/features/employeeTableSlice";
+import { toast } from "react-toastify";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -41,13 +42,24 @@ const DeleteEmployee = (props) => {
 
     const payload = {
       tableRowId,
-      handleDeleteEmployeeClose,
-      dispatchActionPayload: employeeData,
-      setPage,
-      page,
     };
 
-    dispatch(deleteEmployeeTableData(payload));
+    dispatch(deleteEmployeeTableData(payload)).then(() => {
+      handleDeleteEmployeeClose();
+      localStorage.setItem("page", String(page));
+      setPage(page);
+      toast("User Deleted Successully", {
+        autoClose: 2000,
+        type: "success",
+      });
+      dispatch(resetDeleteEmployee())
+      dispatch(getEmployeeTableData(employeeData))
+    })
+      .catch((error) => {
+        // console.log("checking now", error.message)
+        toast(error.message, { autoClose: 2000, type: "error" });
+        dispatch(resetDeleteEmployee())
+      });
   };
 
   return (

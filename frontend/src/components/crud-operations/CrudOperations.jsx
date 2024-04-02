@@ -234,7 +234,7 @@ const CrudOperations = () => {
 
   return (
     <div>
-      <h1>Crud Operations using session storage</h1>
+      <h1>Crud Operations using Local storage</h1>
 
       <div
         style={{
