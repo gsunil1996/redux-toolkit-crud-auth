@@ -32,10 +32,10 @@ const DeleteEmployee = (props) => {
 
   const handleUserDelete = () => {
     const employeeData = {
-      search: sessionStorage.getItem("search"),
-      gender: sessionStorage.getItem("gender"),
-      status: sessionStorage.getItem("status"),
-      sort: sessionStorage.getItem("sort"),
+      search: localStorage.getItem("search"),
+      gender: localStorage.getItem("gender"),
+      status: localStorage.getItem("status"),
+      sort: localStorage.getItem("sort"),
       page,
     };
 

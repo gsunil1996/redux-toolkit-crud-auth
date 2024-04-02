@@ -100,8 +100,6 @@ const columns = [
 
 const CrudOperations = () => {
 
-  console.log("checking", sessionStorage.getItem("page"))
-
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -109,17 +107,17 @@ const CrudOperations = () => {
     (state) => state.employees
   );
 
-  const [search, setSearch] = useState(sessionStorage.getItem("search") || "");
+  const [search, setSearch] = useState(localStorage.getItem("search") || "");
   const [gender, setGender] = useState(
-    sessionStorage.getItem("gender") || "all"
+    localStorage.getItem("gender") || "all"
   );
   const [status, setStatus] = useState(
-    sessionStorage.getItem("status") || "all"
+    localStorage.getItem("status") || "all"
   );
-  const [sort, setSort] = useState(sessionStorage.getItem("sort") || "new");
+  const [sort, setSort] = useState(localStorage.getItem("sort") || "new");
 
   const [page, setPage] = useState(
-    sessionStorage.getItem("page") ? Number(sessionStorage.getItem("page")) : 1
+    localStorage.getItem("page") ? Number(localStorage.getItem("page")) : 1
   );
 
   const [addEmployeeOpen, setAddEmployeeOpen] = useState(false);
@@ -133,7 +131,7 @@ const CrudOperations = () => {
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
-    sessionStorage.setItem("page", newPage);
+    localStorage.setItem("page", newPage);
     getData({ search, gender, status, sort, page: newPage });
   };
 
@@ -166,9 +164,9 @@ const CrudOperations = () => {
 
   const handleSearch = (searchedVal) => {
     setSearch(searchedVal);
-    sessionStorage.setItem("search", searchedVal);
+    localStorage.setItem("search", searchedVal);
     setPage(1);
-    sessionStorage.setItem("page", 1);
+    localStorage.setItem("page", 1);
     if (searchedVal == "") {
       getData({ search: searchedVal, gender, status, sort, page: 1 });
     }
@@ -176,53 +174,53 @@ const CrudOperations = () => {
 
   const requestSearch = () => {
     setPage(1);
-    sessionStorage.setItem("page", 1);
+    localStorage.setItem("page", 1);
     getData({ search, gender, status, sort, page: 1 });
   };
 
   const handleGenderChange = (event) => {
-    sessionStorage.setItem("gender", event.target.value);
+    localStorage.setItem("gender", event.target.value);
     setGender(event.target.value);
-    sessionStorage.setItem("page", 1);
+    localStorage.setItem("page", 1);
     setPage(1);
     getData({ search, gender: event.target.value, status, sort, page: 1 });
   };
 
   const handleStatusChange = (event) => {
-    sessionStorage.setItem("status", event.target.value);
+    localStorage.setItem("status", event.target.value);
     setStatus(event.target.value);
-    sessionStorage.setItem("page", 1);
+    localStorage.setItem("page", 1);
     setPage(1);
     getData({ search, gender, status: event.target.value, sort, page: 1 });
   };
 
   const handleSortChange = (event) => {
-    sessionStorage.setItem("sort", event.target.value);
+    localStorage.setItem("sort", event.target.value);
     setSort(event.target.value);
-    sessionStorage.setItem("page", 1);
+    localStorage.setItem("page", 1);
     setPage(1);
     getData({ search, gender, status, sort: event.target.value, page: 1 });
   };
 
   useEffect(() => {
-    if (!sessionStorage.getItem("page")) {
-      sessionStorage.setItem("page", 1);
+    if (!localStorage.getItem("page")) {
+      localStorage.setItem("page", 1);
     }
 
-    if (!sessionStorage.getItem("gender")) {
-      sessionStorage.setItem("gender", "all");
+    if (!localStorage.getItem("gender")) {
+      localStorage.setItem("gender", "all");
     }
 
-    if (!sessionStorage.getItem("status")) {
-      sessionStorage.setItem("status", "all");
+    if (!localStorage.getItem("status")) {
+      localStorage.setItem("status", "all");
     }
 
-    if (!sessionStorage.getItem("sort")) {
-      sessionStorage.setItem("sort", "new");
+    if (!localStorage.getItem("sort")) {
+      localStorage.setItem("sort", "new");
     }
 
-    if (!sessionStorage.getItem("search")) {
-      sessionStorage.setItem("search", "");
+    if (!localStorage.getItem("search")) {
+      localStorage.setItem("search", "");
     }
 
     getData({

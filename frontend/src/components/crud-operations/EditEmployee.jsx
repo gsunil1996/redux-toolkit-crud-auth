@@ -80,11 +80,11 @@ const EditEmployee = (props) => {
     // console.log("inputData", inputdata)
 
     const employeeData = {
-      search: sessionStorage.getItem("search"),
-      gender: sessionStorage.getItem("gender"),
-      status: sessionStorage.getItem("status"),
-      sort: sessionStorage.getItem("sort"),
-      page: sessionStorage.getItem("page"),
+      search: localStorage.getItem("search"),
+      gender: localStorage.getItem("gender"),
+      status: localStorage.getItem("status"),
+      sort: localStorage.getItem("sort"),
+      page: localStorage.getItem("page"),
     };
 
     const payload = {

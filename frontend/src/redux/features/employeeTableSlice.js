@@ -231,7 +231,7 @@ export const employeeTableSlice = createSlice({
         const { handleAddEmployeeClose, setPage } = action.meta.arg;
         handleAddEmployeeClose();
         setPage(1);
-        sessionStorage.setItem("page", 1);
+        localStorage.setItem("page", 1);
         toast("User Added Successully", { autoClose: 2000, type: "success" });
         employeeTableSlice.caseReducers.resetAddEmployee(state, action);
       })
@@ -308,7 +308,7 @@ export const employeeTableSlice = createSlice({
         // console.log("Inside fulfilled payload", action.meta.arg)
         const { handleDeleteEmployeeClose, setPage, page } = action.meta.arg;
         handleDeleteEmployeeClose();
-        sessionStorage.setItem("page", page);
+        localStorage.setItem("page", page);
         setPage(page);
         toast("User Deleted Successully", {
           autoClose: 2000,

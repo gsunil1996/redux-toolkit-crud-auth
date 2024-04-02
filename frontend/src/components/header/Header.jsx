@@ -8,8 +8,8 @@ const Header = () => {
   const [show, setShow] = useState(true);
   const router = useRouter()
   const pathname = router.pathname;
-  const token = sessionStorage.getItem("token")
-  const userDetails = JSON.parse(sessionStorage.getItem("user_details"))
+  const token = localStorage.getItem("token")
+  const userDetails = JSON.parse(localStorage.getItem("user_details"))
   console.log("userDetails", pathname)
 
   useEffect(() => {

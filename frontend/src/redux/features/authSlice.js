@@ -66,12 +66,9 @@ export const loginAction = createAsyncThunk(
         headers: {},
       });
 
-      sessionStorage.setItem("token", response.data.token);
-      sessionStorage.setItem("refresh_token", response.data.refreshToken);
-      sessionStorage.setItem(
-        "user_details",
-        JSON.stringify(response.data.user)
-      );
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("refresh_token", response.data.refreshToken);
+      localStorage.setItem("user_details", JSON.stringify(response.data.user));
 
       return response.data;
     } catch (error) {
@@ -95,7 +92,7 @@ export const authRefreshAction = createAsyncThunk(
   "auth/authRefreshAction",
   async (thunkAPI) => {
     try {
-      const refresh_token = sessionStorage.getItem("refresh_token");
+      const refresh_token = localStorage.getItem("refresh_token");
 
       const refreshResponse = await axios.get(`${baseUrl}/refresh`, {
         headers: {
@@ -106,7 +103,7 @@ export const authRefreshAction = createAsyncThunk(
       if (refreshResponse.data && refreshResponse.data.token) {
         // console.log('refreshResponse', refreshResponse)
 
-        sessionStorage.setItem("token", refreshResponse.data.token);
+        localStorage.setItem("token", refreshResponse.data.token);
 
         return refreshResponse.data;
       } else {
@@ -135,7 +132,7 @@ export const checkTokenValidtyAction = createAsyncThunk(
   "auth/checkTokenValidtyAction",
   async (payload, thunkAPI) => {
     try {
-      const token = sessionStorage.getItem("token");
+      const token = localStorage.getItem("token");
 
       const response = await axios.get(`${baseUrl}/protected`, {
         headers: {
@@ -161,7 +158,7 @@ export const checkTokenValidtyAction = createAsyncThunk(
             },
           });
 
-          sessionStorage.setItem("token", refreshedToken.payload.token);
+          localStorage.setItem("token", refreshedToken.payload.token);
 
           return retryResponse.data;
         } catch (refreshError) {
@@ -192,7 +189,7 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     logOut: () => {
-      sessionStorage.clear();
+      localStorage.clear();
     },
     resetRegisterAction(state) {
       state.registerIsLoading = false;

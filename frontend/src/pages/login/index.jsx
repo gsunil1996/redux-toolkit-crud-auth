@@ -52,7 +52,7 @@ const Login = () => {
   };
 
   useEffect(() => {
-    sessionStorage.clear();
+    localStorage.clear();
     dispatch(resetRefreshction());
     dispatch(resetCheckTokenValidtyAction());
     dispatch(resetRegisterAction());
