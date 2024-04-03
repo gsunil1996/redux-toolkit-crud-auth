@@ -7,12 +7,14 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteEmployeeTableData, getEmployeeTableData, resetDeleteEmployee } from "@/redux/features/employeeTableSlice";
 import { toast } from "react-toastify";
+import { useRouter } from "next/router";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const DeleteEmployee = (props) => {
+  const router = useRouter()
   const {
     deleteEmployeeOpen,
     setDeleteEmployeeOpen,
@@ -23,8 +25,8 @@ const DeleteEmployee = (props) => {
 
   const dispatch = useDispatch();
 
-  const isLoading = useSelector(
-    (state) => state.employees.employeeDeleteDataLoading
+  const { employeeDeleteDataLoading, employeeDeleteDataIsError, employeeDeleteDataError, employeeDeleteDataIsSuccess } = useSelector(
+    (state) => state.employees
   );
 
   const handleDeleteEmployeeClose = () => {
@@ -32,19 +34,24 @@ const DeleteEmployee = (props) => {
   };
 
   const handleUserDelete = () => {
-    const employeeData = {
-      search: localStorage.getItem("search"),
-      gender: localStorage.getItem("gender"),
-      status: localStorage.getItem("status"),
-      sort: localStorage.getItem("sort"),
-      page,
-    };
 
     const payload = {
       tableRowId,
     };
 
-    dispatch(deleteEmployeeTableData(payload)).then(() => {
+    dispatch(deleteEmployeeTableData(payload))
+  };
+
+  useEffect(() => {
+    if (employeeDeleteDataIsSuccess) {
+      const employeeData = {
+        search: localStorage.getItem("search") || "",
+        gender: localStorage.getItem("gender") || "all",
+        status: localStorage.getItem("status") || "all",
+        sort: localStorage.getItem("sort") || "new",
+        page,
+      };
+
       handleDeleteEmployeeClose();
       localStorage.setItem("page", String(page));
       setPage(page);
@@ -54,13 +61,14 @@ const DeleteEmployee = (props) => {
       });
       dispatch(resetDeleteEmployee())
       dispatch(getEmployeeTableData(employeeData))
-    })
-      .catch((error) => {
-        // console.log("checking now", error.message)
-        toast(error.message, { autoClose: 2000, type: "error" });
-        dispatch(resetDeleteEmployee())
-      });
-  };
+    } else if (employeeDeleteDataIsError) {
+      toast(employeeDeleteDataError, { autoClose: 2000, type: "error" });
+      dispatch(resetDeleteEmployee())
+      if (employeeDeleteDataError === "Invalid Token") {
+        router.push('/login')
+      }
+    }
+  }, [employeeDeleteDataIsError, employeeDeleteDataIsSuccess])
 
   return (
     <div>
@@ -99,7 +107,7 @@ const DeleteEmployee = (props) => {
               color="secondary"
               onClick={handleUserDelete}
             >
-              {isLoading ? (
+              {employeeDeleteDataLoading ? (
                 <CircularProgress style={{ color: "#fff" }} />
               ) : (
                 "Yes"

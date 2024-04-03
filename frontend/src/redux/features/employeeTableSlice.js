@@ -9,35 +9,35 @@ import Link from "next/link";
 
 const initialState = {
   // get employee table data
-  data: [],
+  data: null,
   isLoading: false,
   isError: false,
   error: "",
   isSuccess: false,
 
   // get employee profile
-  employeeProfileData: {},
+  employeeProfileData: null,
   employeeProfileIsLoading: false,
   employeeProfileIsError: false,
   employeeProfileError: "",
   employeeProfileIsSuccess: false,
 
   // add employee table data
-  employeeAddedData: {},
+  employeeAddedData: null,
   employeeAddDataLoading: false,
   employeeAddedDataIsError: false,
   employeeAddedDataError: "",
   employeeAddedDataIsSuccess: false,
 
   // edit employee table data
-  employeeEditedData: {},
+  employeeEditedData: null,
   employeeEditDataLoading: false,
   employeeEditDataIsError: false,
   employeeEditDataError: "",
   employeeEditDataIsSuccess: false,
 
   // delete employee table data
-  employeeDeletedData: {},
+  employeeDeletedData: null,
   employeeDeleteDataLoading: false,
   employeeDeleteDataIsError: false,
   employeeDeleteDataError: "",
@@ -130,7 +130,7 @@ export const employeeTableSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(getEmployeeTableData.pending, (state) => {
-        state.data = [];
+        state.data = null;
         state.isLoading = true;
         state.isError = false;
         state.error = "";
@@ -144,22 +144,16 @@ export const employeeTableSlice = createSlice({
         state.isSuccess = true;
       })
       .addCase(getEmployeeTableData.rejected, (state, action) => {
-        state.data = [];
+        state.data = null;
         state.isLoading = false;
         state.isError = true;
-        state.error =
-          action.error.message == "Invalid Token" ? (
-            <div>
-              {action.error.message}
-              <Link href="/login">Please login again</Link>
-            </div>
-          ) : (
-            action.error.message
-          );
+        state.error = action.error.message
+          ? action.error.message
+          : "An unknown error occurred";
         state.isSuccess = false;
       })
       .addCase(getEmployeeProfileData.pending, (state) => {
-        state.employeeProfileData = {};
+        state.employeeProfileData = null;
         state.employeeProfileIsLoading = true;
         state.employeeProfileIsError = false;
         state.employeeProfileError = "";
@@ -173,22 +167,16 @@ export const employeeTableSlice = createSlice({
         state.employeeProfileIsSuccess = true;
       })
       .addCase(getEmployeeProfileData.rejected, (state, action) => {
-        state.employeeProfileData = {};
+        state.employeeProfileData = null;
         state.employeeProfileIsLoading = false;
         state.employeeProfileIsError = true;
-        state.employeeProfileError =
-          action.error.message == "Invalid Token" ? (
-            <div>
-              {action.error.message}
-              <Link href="/login">Please login again</Link>
-            </div>
-          ) : (
-            action.error.message
-          );
+        state.employeeProfileError = action.error.message
+          ? action.error.message
+          : "An unknown error occurred";
         state.employeeProfileIsSuccess = false;
       })
       .addCase(addEmployeeTableData.pending, (state) => {
-        state.employeeAddedData = {};
+        state.employeeAddedData = null;
         state.employeeAddDataLoading = true;
         state.employeeAddedDataIsError = false;
         state.employeeAddedDataError = "";
@@ -202,14 +190,16 @@ export const employeeTableSlice = createSlice({
         state.employeeAddedDataIsSuccess = true;
       })
       .addCase(addEmployeeTableData.rejected, (state, action) => {
-        state.employeeAddedData = {};
+        state.employeeAddedData = null;
         state.employeeAddDataLoading = false;
         state.employeeAddedDataIsError = true;
-        state.employeeAddedDataError = action.error.message;
+        state.employeeAddedDataError = action.error.message
+          ? action.error.message
+          : "An unknown error occurred";
         state.employeeAddedDataIsSuccess = false;
       })
       .addCase(editEmployeeTableData.pending, (state) => {
-        state.employeeEditedData = {};
+        state.employeeEditedData = null;
         state.employeeEditDataLoading = true;
         state.employeeEditDataIsError = false;
         state.employeeEditDataError = "";
@@ -223,14 +213,16 @@ export const employeeTableSlice = createSlice({
         state.employeeEditDataIsSuccess = true;
       })
       .addCase(editEmployeeTableData.rejected, (state, action) => {
-        state.employeeEditedData = {};
+        state.employeeEditedData = null;
         state.employeeEditDataLoading = false;
         state.employeeEditDataIsError = true;
-        state.employeeEditDataError = action.error.message;
+        state.employeeEditDataError = action.error.message
+          ? action.error.message
+          : "An unknown error occurred";
         state.employeeEditDataIsSuccess = false;
       })
       .addCase(deleteEmployeeTableData.pending, (state) => {
-        state.employeeDeletedData = {};
+        state.employeeDeletedData = null;
         state.employeeDeleteDataLoading = true;
         state.employeeDeleteDataIsError = false;
         state.employeeDeleteDataError = "";
@@ -244,10 +236,12 @@ export const employeeTableSlice = createSlice({
         state.employeeDeleteDataIsSuccess = true;
       })
       .addCase(deleteEmployeeTableData.rejected, (state, action) => {
-        state.employeeDeletedData = {};
+        state.employeeDeletedData = null;
         state.employeeDeleteDataLoading = false;
         state.employeeDeleteDataIsError = true;
-        state.employeeDeleteDataError = action.error.message;
+        state.employeeDeleteDataError = action.error.message
+          ? action.error.message
+          : "An unknown error occurred";
         state.employeeDeleteDataIsSuccess = true;
       });
   },

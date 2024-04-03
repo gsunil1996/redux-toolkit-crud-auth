@@ -11,7 +11,7 @@ import { getEmployeeProfileData } from "@/redux/features/employeeTableSlice";
 const EmployeesProfile = () => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const id = router.query.employee;
+  const id = Array.isArray(router.query.employee) ? router.query.employee[0] : router.query.employee;
 
   const data = useSelector((state) => state.employees.employeeProfileData);
   const isLoading = useSelector(
@@ -26,7 +26,9 @@ const EmployeesProfile = () => {
   );
 
   useEffect(() => {
-    dispatch(getEmployeeProfileData({ id }));
+    if (id) {
+      dispatch(getEmployeeProfileData({ id }));
+    }
   }, [dispatch, id]);
 
   return (
@@ -37,7 +39,14 @@ const EmployeesProfile = () => {
         </div>
       ) : isError ? (
         <div style={{ width: "100%", marginTop: "20px", textAlign: "center" }}>
-          <h1>{error}</h1>
+          {
+            error === "Invalid Token" ? (<div style={{ marginTop: "20px" }} >
+              <h4>{error}</h4>
+              <Link href="/login">Please login again</Link>
+            </div>) : (<div style={{ marginTop: "20px" }} >
+              <h4>{error}</h4>
+            </div>)
+          }s
         </div>
       ) : isSuccess ? (
         <div>

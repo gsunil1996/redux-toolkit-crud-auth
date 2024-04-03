@@ -33,7 +33,7 @@ export const createAsyncThunkWithTokenRefresh = (type, requestFunction) =>
   createAsyncThunk(`${type}`, async (payload, thunkAPI) => {
     try {
       // Get the token from the local storage
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token") || "";
 
       // Make the initial request using the provided function and token
       const response = await requestFunction(token, payload);
@@ -57,7 +57,7 @@ export const createAsyncThunkWithTokenRefresh = (type, requestFunction) =>
       }
 
       // Handle unauthorized (401) error (access token expired)
-      if (error.response && error.response.status === 401) {
+      else if (error.response && error.response.status === 401) {
         // Attempt to refresh the access token
         const refreshedToken = await refreshAccessToken(thunkAPI);
 
@@ -88,7 +88,7 @@ export const createAsyncThunkWithTokenRefresh = (type, requestFunction) =>
         }
 
         // Handle unauthorized (401) error after token refresh (refresh token expired)
-        if (
+        else if (
           refreshedToken.response &&
           refreshedToken.response?.status === 401
         ) {
@@ -108,27 +108,18 @@ export const createAsyncThunkWithTokenRefresh = (type, requestFunction) =>
             // Handle errors in the retry request
             throw new Error(error.response?.data?.error || "An error occurred");
           }
-        } else {
-          // Handle cases where token refresh fails
-          throw new Error(
-            refreshedToken.response?.data?.error || "Token refresh failed"
-          );
         }
-      }
-
-      if (error.message == "Network Error") {
+      } else if (error.message == "Network Error") {
         throw new Error(
           "There was an error with the internal server. Please contact your site administrator."
         );
-      }
-
-      if (!error.response) {
+      } else if (!error.response) {
         throw new Error(
           "There was an error with the internal server. Please contact your site administrator."
         );
+      } else {
+        // Throw a generic error if none of the specific error conditions are met
+        throw new Error(error.response?.data?.error || "An error occurred");
       }
-
-      // Throw a generic error if none of the specific error conditions are met
-      throw new Error(error.response?.data?.error || "An error occurred");
     }
   });

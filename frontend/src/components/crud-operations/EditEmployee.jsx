@@ -25,8 +25,8 @@ const EditEmployee = (props) => {
   const { editEmployeeopen, setEditEmployeeOpen, tableRowId } = props;
   const dispatch = useDispatch();
 
-  const isLoading = useSelector(
-    (state) => state.employees.employeeEditDataLoading
+  const { employeeEditDataLoading, employeeEditDataIsError, employeeEditDataError, employeeEditDataIsSuccess } = useSelector(
+    (state) => state.employees
   );
 
   const employeeProfileData = useSelector(
@@ -80,20 +80,24 @@ const EditEmployee = (props) => {
 
     // console.log("inputData", inputdata)
 
-    const employeeData = {
-      search: localStorage.getItem("search"),
-      gender: localStorage.getItem("gender"),
-      status: localStorage.getItem("status"),
-      sort: localStorage.getItem("sort"),
-      page: localStorage.getItem("page"),
-    };
-
     const payload = {
       data: inputdata,
       tableRowId,
     };
 
-    dispatch(editEmployeeTableData(payload)).then(() => {
+    dispatch(editEmployeeTableData(payload))
+  };
+
+  useEffect(() => {
+    if (employeeEditDataIsSuccess) {
+      const employeeData = {
+        search: localStorage.getItem("search") || "",
+        gender: localStorage.getItem("gender") || "all",
+        status: localStorage.getItem("status") || "all",
+        sort: localStorage.getItem("sort") || "new",
+        page: Number(localStorage.getItem("page")) || 1,
+      };
+
       handleEditEmployeeClose();
       toast("User Edited Successully", {
         autoClose: 2000,
@@ -101,13 +105,14 @@ const EditEmployee = (props) => {
       });
       dispatch(resetEditEmployee())
       dispatch(getEmployeeTableData(employeeData))
-    })
-      .catch((error) => {
-        // console.log("checking now", error.message)
-        toast(error.message, { autoClose: 2000, type: "error" });
-        dispatch(resetEditEmployee())
-      });
-  };
+    } else if (employeeEditDataIsError) {
+      toast(employeeEditDataError, { autoClose: 2000, type: "error" });
+      dispatch(resetEditEmployee())
+      if (employeeEditDataError === "Invalid Token") {
+        router.push('/login')
+      }
+    }
+  }, [employeeEditDataIsSuccess, employeeEditDataIsError])
 
   useEffect(() => {
     if (
@@ -283,7 +288,7 @@ const EditEmployee = (props) => {
                 type="submit"
                 fullWidth
               >
-                {isLoading ? (
+                {employeeEditDataLoading ? (
                   <CircularProgress style={{ color: "#fff" }} />
                 ) : (
                   "Submit"

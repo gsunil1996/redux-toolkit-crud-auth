@@ -8,9 +8,9 @@ const Header = () => {
   const [show, setShow] = useState(true);
   const router = useRouter()
   const pathname = router.pathname;
-  const token = localStorage.getItem("token")
-  const userDetails = JSON.parse(localStorage.getItem("user_details"))
-  console.log("userDetails", pathname)
+  const token = typeof window !== 'undefined' ? localStorage.getItem("token") : "";
+  const userDetailsJSON = typeof window !== 'undefined' ? localStorage.getItem("user_details") : "";
+  const userDetails = userDetailsJSON ? JSON.parse(userDetailsJSON) : null;
 
   useEffect(() => {
 

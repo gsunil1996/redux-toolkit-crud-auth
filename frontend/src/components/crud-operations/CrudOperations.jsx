@@ -166,7 +166,7 @@ const CrudOperations = () => {
     setSearch(searchedVal);
     localStorage.setItem("search", searchedVal);
     setPage(1);
-    localStorage.setItem("page", 1);
+    localStorage.setItem("page", "1");
     if (searchedVal == "") {
       getData({ search: searchedVal, gender, status, sort, page: 1 });
     }
@@ -174,14 +174,14 @@ const CrudOperations = () => {
 
   const requestSearch = () => {
     setPage(1);
-    localStorage.setItem("page", 1);
+    localStorage.setItem("page", "1");
     getData({ search, gender, status, sort, page: 1 });
   };
 
   const handleGenderChange = (event) => {
     localStorage.setItem("gender", event.target.value);
     setGender(event.target.value);
-    localStorage.setItem("page", 1);
+    localStorage.setItem("page", "1");
     setPage(1);
     getData({ search, gender: event.target.value, status, sort, page: 1 });
   };
@@ -189,7 +189,7 @@ const CrudOperations = () => {
   const handleStatusChange = (event) => {
     localStorage.setItem("status", event.target.value);
     setStatus(event.target.value);
-    localStorage.setItem("page", 1);
+    localStorage.setItem("page", "1");
     setPage(1);
     getData({ search, gender, status: event.target.value, sort, page: 1 });
   };
@@ -197,14 +197,14 @@ const CrudOperations = () => {
   const handleSortChange = (event) => {
     localStorage.setItem("sort", event.target.value);
     setSort(event.target.value);
-    localStorage.setItem("page", 1);
+    localStorage.setItem("page", "1");
     setPage(1);
     getData({ search, gender, status, sort: event.target.value, page: 1 });
   };
 
   useEffect(() => {
     if (!localStorage.getItem("page")) {
-      localStorage.setItem("page", 1);
+      localStorage.setItem("page", "1");
     }
 
     if (!localStorage.getItem("gender")) {
@@ -347,7 +347,14 @@ const CrudOperations = () => {
         <div
           style={{ width: "100%", display: "flex", justifyContent: "center" }}
         >
-          <h4>{error}</h4>
+          {
+            error === "Invalid Token" ? (<div style={{ marginTop: "20px" }} >
+              <h4>{error}</h4>
+              <Link href="/login">Please login again</Link>
+            </div>) : (<div style={{ marginTop: "20px" }} >
+              <h4>{error}</h4>
+            </div>)
+          }
         </div>
       ) : isSuccess === true && data?.data?.employeesTableData?.length == 0 ? (
         <div
@@ -382,7 +389,7 @@ const CrudOperations = () => {
                           key={column.id}
                           align={column.align}
                           style={{
-                            minWidth: column.minWidth,
+                            minWidth: column.minwidth,
                             background: column.background,
                             color: "#fff",
                           }}
@@ -500,7 +507,7 @@ const CrudOperations = () => {
 
       {/* delete employee dialog */}
 
-      {data?.data?.employeesTableData?.length !== "undefined" && (
+      {typeof data?.data?.employeesTableData?.length !== "undefined" && (
         <DeleteEmployee
           deleteEmployeeOpen={deleteEmployeeOpen}
           setDeleteEmployeeOpen={setDeleteEmployeeOpen}

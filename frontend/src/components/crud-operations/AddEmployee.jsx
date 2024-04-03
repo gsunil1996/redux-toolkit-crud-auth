@@ -15,17 +15,19 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useDispatch, useSelector } from "react-redux";
 import { addEmployeeTableData, getEmployeeTableData, resetAddEmployee } from "@/redux/features/employeeTableSlice";
 import { toast } from "react-toastify";
+import { useRouter } from "next/router";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const AddEmployee = (props) => {
+  const router = useRouter()
   const { addEmployeeOpen, setAddEmployeeOpen, setPage } = props;
   const dispatch = useDispatch();
 
-  const isLoading = useSelector(
-    (state) => state.employees.employeeAddDataLoading
+  const { employeeAddDataLoading, employeeAddedDataIsError, employeeAddedDataError, employeeAddedDataIsSuccess } = useSelector(
+    (state) => state.employees
   );
 
   const [inputdata, setInputData] = useState({
@@ -71,20 +73,33 @@ const AddEmployee = (props) => {
       page: 1,
     };
 
-    dispatch(addEmployeeTableData(inputdata)).then(() => {
+    dispatch(addEmployeeTableData(inputdata))
+  };
+
+  useEffect(() => {
+    const employeeData = {
+      search: localStorage.getItem("search") || "",
+      gender: localStorage.getItem("gender") || "all",
+      status: localStorage.getItem("status") || "all",
+      sort: localStorage.getItem("sort") || "new",
+      page: 1,
+    };
+
+    if (employeeAddedDataIsSuccess) {
       handleAddEmployeeClose();
       setPage(1);
       localStorage.setItem("page", "1");
       toast("User Added Successully", { autoClose: 2000, type: "success" });
       dispatch(resetAddEmployee())
       dispatch(getEmployeeTableData(employeeData));
-    })
-      .catch((error) => {
-        // console.log("checking now", error.message)
-        toast(error.message, { autoClose: 2000, type: "error" });
-        dispatch(resetAddEmployee())
-      });
-  };
+    } else if (employeeAddedDataIsError) {
+      toast(employeeAddedDataError, { autoClose: 2000, type: "error" });
+      dispatch(resetAddEmployee())
+      if (employeeAddedDataError === "Invalid Token") {
+        router.push('/login')
+      }
+    }
+  }, [employeeAddedDataIsSuccess, employeeAddedDataIsError])
 
   return (
     <div>
@@ -235,7 +250,7 @@ const AddEmployee = (props) => {
               </Grid>
             </Grid>
             <Button variant="contained" color="primary" type="submit" fullWidth>
-              {isLoading ? (
+              {employeeAddDataLoading ? (
                 <CircularProgress style={{ color: "#fff" }} />
               ) : (
                 "Submit"
