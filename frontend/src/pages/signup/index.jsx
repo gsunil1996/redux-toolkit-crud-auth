@@ -5,36 +5,60 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux'
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
-
-import IconButton from '@mui/material/IconButton';
-import Input from '@mui/material/Input';
-import FilledInput from '@mui/material/FilledInput';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import InputAdornment from '@mui/material/InputAdornment';
-import FormHelperText from '@mui/material/FormHelperText';
-import FormControl from '@mui/material/FormControl';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import IconButton from "@mui/material/IconButton";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputLabel from "@mui/material/InputLabel";
+import InputAdornment from "@mui/material/InputAdornment";
+import FormControl from "@mui/material/FormControl";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import {
+  registerAction,
+  resetRegisterAction,
+} from "@/redux/features/authSlice";
+import { toast } from "react-toastify";
+import { useRouter } from "next/router";
 
 const SignUp = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
+  const {
+    registerIsLoading,
+    registerIsError,
+    registerError,
+    registerIsSuccess,
+  } = useSelector((state) => state.auth);
 
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  const [username, setUsername] = useState("")
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    console.log(username, email, password)
-  }
+    e.preventDefault();
+    // console.log(username, email, password)
+    dispatch(registerAction({ username, email, password }));
+  };
+
+  useEffect(() => {
+    if (registerIsSuccess) {
+      toast("User Registered Successfully", {
+        autoClose: 2000,
+        type: "success",
+      });
+      dispatch(resetRegisterAction());
+      router.push("/login");
+    } else if (registerIsError) {
+      toast(registerError, { autoClose: 2000, type: "error" });
+      dispatch(resetRegisterAction());
+    }
+  }, [registerIsSuccess, registerIsError]);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -46,8 +70,7 @@ const SignUp = () => {
           alignItems: "center",
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-        </Avatar>
+        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}></Avatar>
         <Typography component="h1" variant="h5">
           Sign Up
         </Typography>
@@ -62,7 +85,7 @@ const SignUp = () => {
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            autoComplete='off'
+            autoComplete="off"
             InputLabelProps={{
               shrink: true,
             }}
@@ -76,16 +99,18 @@ const SignUp = () => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            autoComplete='off'
+            autoComplete="off"
             InputLabelProps={{
               shrink: true,
             }}
           />
           <FormControl required fullWidth variant="outlined">
-            <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+            <InputLabel htmlFor="outlined-adornment-password">
+              Password
+            </InputLabel>
             <OutlinedInput
               id="outlined-adornment-password"
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
@@ -100,7 +125,7 @@ const SignUp = () => {
               name="password"
               label="Password"
               value={password}
-              autoComplete='off'
+              autoComplete="off"
               onChange={(e) => setPassword(e.target.value)}
             />
           </FormControl>
@@ -110,9 +135,7 @@ const SignUp = () => {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            {/* {isLoading ? <div>Loading ...</div> : "Sign In"} */}
-            Sign Up
-
+            {registerIsLoading ? <div>Loading ...</div> : "Sign UP"}
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
@@ -124,7 +147,7 @@ const SignUp = () => {
         </Box>
       </Box>
     </Container>
-  )
-}
+  );
+};
 
-export default SignUp
+export default SignUp;

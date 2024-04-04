@@ -54,6 +54,7 @@ const Login = () => {
 
   useEffect(() => {
     localStorage.clear();
+    dispatch(resetLoginAction());
     dispatch(resetRefreshction());
     dispatch(resetCheckTokenValidtyAction());
     dispatch(resetRegisterAction());

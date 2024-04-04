@@ -8,28 +8,28 @@ import {
 
 const initialState = {
   // register
-  registerData: {},
+  registerData: null,
   registerIsLoading: false,
   registerIsError: false,
   registerError: "",
   registerIsSuccess: false,
 
   // login
-  loginData: {},
+  loginData: null,
   loginIsLoading: false,
   loginIsError: false,
   loginError: "",
   loginIsSuccess: false,
 
   // refresh
-  refreshData: {},
+  refreshData: null,
   refreshIsLoading: false,
   refreshIsError: false,
   refreshError: "",
   refreshIsSuccess: false,
 
   // check token validity
-  checkTokenValidityData: {},
+  checkTokenValidityData: null,
   checkTokenValidityIsLoading: false,
   checkTokenValidityIsError: false,
   checkTokenValidityError: "",
@@ -148,27 +148,28 @@ export const authSlice = createSlice({
       localStorage.clear();
     },
     resetRegisterAction(state) {
+      state.registerData = null;
       state.registerIsLoading = false;
       state.registerIsError = false;
       state.registerError = "";
       state.registerIsSuccess = false;
     },
     resetLoginAction(state) {
-      // state.loginData = {}
+      state.loginData = null;
       state.loginIsLoading = false;
       state.loginIsError = false;
       state.loginError = "";
       state.loginIsSuccess = false;
     },
     resetRefreshction(state) {
-      // state.refreshData = {}
+      state.refreshData = null;
       state.refreshIsLoading = false;
       state.refreshIsError = false;
       state.refreshError = "";
       state.refreshIsSuccess = false;
     },
     resetCheckTokenValidtyAction(state) {
-      // state.checkTokenValidityData = {}
+      state.checkTokenValidityData = null;
       state.checkTokenValidityIsLoading = false;
       state.checkTokenValidityIsError = false;
       state.checkTokenValidityError = "";
@@ -178,9 +179,34 @@ export const authSlice = createSlice({
   extraReducers(builder) {
     builder
 
+      // regitser
+      .addCase(registerAction.pending, (state) => {
+        state.registerData = null;
+        state.registerIsLoading = true;
+        state.registerIsError = false;
+        state.registerError = "";
+        state.registerIsSuccess = false;
+      })
+      .addCase(registerAction.fulfilled, (state, action) => {
+        state.registerData = action.payload;
+        state.registerIsLoading = false;
+        state.registerIsError = false;
+        state.registerError = "";
+        state.registerIsSuccess = true;
+      })
+      .addCase(registerAction.rejected, (state, action) => {
+        state.registerData = null;
+        state.registerIsLoading = false;
+        state.registerIsError = true;
+        state.registerError = action.error.message
+          ? action.error.message
+          : "An unknown error occurred";
+        state.registerIsSuccess = false;
+      })
+
       // login
       .addCase(loginAction.pending, (state) => {
-        state.loginData = {};
+        state.loginData = null;
         state.loginIsLoading = true;
         state.loginIsError = false;
         state.loginError = "";
@@ -198,16 +224,18 @@ export const authSlice = createSlice({
       .addCase(loginAction.rejected, (state, action) => {
         // console.log('loginAction Inside error', action)
 
-        state.loginData = {};
+        state.loginData = null;
         state.loginIsLoading = false;
         state.loginIsError = true;
-        state.loginError = action.error.message;
+        state.loginError = action.error.message
+          ? action.error.message
+          : "An unknown error occurred";
         state.loginIsSuccess = false;
       })
 
       // refresh
       .addCase(authRefreshAction.pending, (state) => {
-        state.refreshData = {};
+        state.refreshData = null;
         state.refreshIsLoading = true;
         state.refreshIsError = false;
         state.refreshError = "";
@@ -224,16 +252,18 @@ export const authSlice = createSlice({
       })
       .addCase(authRefreshAction.rejected, (state, action) => {
         // console.log("Inside error", action)
-        state.refreshData = {};
+        state.refreshData = null;
         state.refreshIsLoading = false;
         state.refreshIsError = true;
-        state.refreshError = action.error.message;
+        state.refreshError = action.error.message
+          ? action.error.message
+          : "An unknown error occurred";
         state.refreshIsSuccess = false;
       })
 
-      // check token validity
+      // check token validitys
       .addCase(checkTokenValidtyAction.pending, (state) => {
-        state.checkTokenValidityData = {};
+        state.checkTokenValidityData = null;
         state.checkTokenValidityIsLoading = true;
         state.checkTokenValidityIsError = false;
         state.checkTokenValidityError = "";
@@ -250,10 +280,12 @@ export const authSlice = createSlice({
       })
       .addCase(checkTokenValidtyAction.rejected, (state, action) => {
         // console.log("Inside error", action)
-        state.checkTokenValidityData = {};
+        state.checkTokenValidityData = null;
         state.checkTokenValidityIsLoading = false;
         state.checkTokenValidityIsError = true;
-        state.checkTokenValidityError = action.error.message;
+        state.checkTokenValidityError = action.error.message
+          ? action.error.message
+          : "An unknown error occurred";
         state.checkTokenValidityIsSuccess = false;
       });
   },
