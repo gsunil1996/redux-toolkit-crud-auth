@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import Slide from "@mui/material/Slide";
@@ -94,8 +94,8 @@ const AddEmployee = (props) => {
       dispatch(getEmployeeTableData(employeeData));
     } else if (employeeAddedDataIsError) {
       toast(employeeAddedDataError, { autoClose: 2000, type: "error" });
-      dispatch(resetAddEmployee())
       if (employeeAddedDataError === "Invalid Token") {
+        dispatch(resetAddEmployee())
         router.push('/login')
       }
     }

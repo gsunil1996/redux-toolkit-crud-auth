@@ -29,6 +29,7 @@ import {
 import DeleteEmployee from "./DeleteEmployee";
 import AddEmployee from "./AddEmployee";
 import EditEmployee from "./EditEmployee";
+import Link from "next/link";
 
 const columns = [
   {
@@ -499,11 +500,12 @@ const CrudOperations = () => {
       />
 
       {/* edit employee dialog */}
-      <EditEmployee
+      {tableRowId && <EditEmployee
         editEmployeeopen={editEmployeeopen}
         setEditEmployeeOpen={setEditEmployeeOpen}
         tableRowId={tableRowId}
-      />
+      />}
+
 
       {/* delete employee dialog */}
 

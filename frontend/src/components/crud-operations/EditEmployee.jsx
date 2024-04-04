@@ -14,14 +14,16 @@ import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useDispatch, useSelector } from "react-redux";
-import { editEmployeeTableData, getEmployeeTableData, resetEditEmployee } from "@/redux/features/employeeTableSlice";
+import { editEmployeeTableData, getEmployeeTableData, resetEditEmployee, resetGetEmployeeProfile } from "@/redux/features/employeeTableSlice";
 import { toast } from "react-toastify";
+import { useRouter } from "next/router";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const EditEmployee = (props) => {
+  const router = useRouter()
   const { editEmployeeopen, setEditEmployeeOpen, tableRowId } = props;
   const dispatch = useDispatch();
 
@@ -38,7 +40,7 @@ const EditEmployee = (props) => {
   const employeeProfileIsError = useSelector(
     (state) => state.employees.employeeProfileIsError
   );
-  const employeeDetailsError = useSelector(
+  const employeeProfileError = useSelector(
     (state) => state.employees.employeeProfileError
   );
   const employeeProfileIsSuccess = useSelector(
@@ -107,12 +109,17 @@ const EditEmployee = (props) => {
       dispatch(getEmployeeTableData(employeeData))
     } else if (employeeEditDataIsError) {
       toast(employeeEditDataError, { autoClose: 2000, type: "error" });
-      dispatch(resetEditEmployee())
       if (employeeEditDataError === "Invalid Token") {
+        dispatch(resetEditEmployee())
+        router.push('/login')
+      }
+    } else if (employeeProfileIsError) {
+      if (employeeProfileError === "Invalid Token") {
+        dispatch(resetGetEmployeeProfile())
         router.push('/login')
       }
     }
-  }, [employeeEditDataIsSuccess, employeeEditDataIsError])
+  }, [employeeEditDataIsSuccess, employeeEditDataIsError, employeeProfileIsError])
 
   useEffect(() => {
     if (
@@ -163,7 +170,7 @@ const EditEmployee = (props) => {
           <div
             style={{ width: "100%", marginTop: "20px", textAlign: "center" }}
           >
-            <h1>{employeeDetailsError}</h1>
+            <h1>{employeeProfileError}</h1>
           </div>
         ) : employeeProfileIsSuccess ? (
           <DialogContent dividers>

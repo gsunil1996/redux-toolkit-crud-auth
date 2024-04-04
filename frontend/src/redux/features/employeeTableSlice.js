@@ -5,7 +5,6 @@ import {
   createAxiosConfig,
 } from "../commonFunction";
 import { baseUrl } from "../baseUrl";
-import Link from "next/link";
 
 const initialState = {
   // get employee table data
@@ -108,6 +107,13 @@ export const employeeTableSlice = createSlice({
   name: "employeeTable",
   initialState,
   reducers: {
+    resetGetEmployeeProfile(state) {
+      state.employeeProfileData = null;
+      state.employeeProfileIsLoading = false;
+      state.employeeProfileIsError = false;
+      state.employeeProfileError = "";
+      state.employeeProfileIsSuccess = false;
+    },
     resetAddEmployee(state) {
       state.employeeAddDataLoading = false;
       state.employeeAddedDataIsError = false;
@@ -242,12 +248,16 @@ export const employeeTableSlice = createSlice({
         state.employeeDeleteDataError = action.error.message
           ? action.error.message
           : "An unknown error occurred";
-        state.employeeDeleteDataIsSuccess = true;
+        state.employeeDeleteDataIsSuccess = false;
       });
   },
 });
 
-export const { resetAddEmployee, resetDeleteEmployee, resetEditEmployee } =
-  employeeTableSlice.actions;
+export const {
+  resetAddEmployee,
+  resetDeleteEmployee,
+  resetEditEmployee,
+  resetGetEmployeeProfile,
+} = employeeTableSlice.actions;
 
 export default employeeTableSlice.reducer;

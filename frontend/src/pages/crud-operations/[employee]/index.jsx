@@ -7,6 +7,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Button from "@mui/material/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { getEmployeeProfileData } from "@/redux/features/employeeTableSlice";
+import Link from "next/link";
 
 const EmployeesProfile = () => {
   const router = useRouter();
@@ -46,7 +47,7 @@ const EmployeesProfile = () => {
             </div>) : (<div style={{ marginTop: "20px" }} >
               <h4>{error}</h4>
             </div>)
-          }s
+          }
         </div>
       ) : isSuccess ? (
         <div>
