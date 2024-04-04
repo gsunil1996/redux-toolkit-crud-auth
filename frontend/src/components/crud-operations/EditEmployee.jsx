@@ -113,6 +113,7 @@ const EditEmployee = (props) => {
         dispatch(resetEditEmployee())
         router.push('/login')
       }
+      dispatch(resetEditEmployee())
     } else if (employeeProfileIsError) {
       if (employeeProfileError === "Invalid Token") {
         dispatch(resetGetEmployeeProfile())

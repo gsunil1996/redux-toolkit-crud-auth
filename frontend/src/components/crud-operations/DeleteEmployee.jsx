@@ -67,6 +67,7 @@ const DeleteEmployee = (props) => {
         dispatch(resetDeleteEmployee())
         router.push('/login')
       }
+      dispatch(resetDeleteEmployee())
     }
   }, [employeeDeleteDataIsError, employeeDeleteDataIsSuccess])
 

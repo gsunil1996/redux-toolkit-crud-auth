@@ -98,6 +98,7 @@ const AddEmployee = (props) => {
         dispatch(resetAddEmployee())
         router.push('/login')
       }
+      dispatch(resetAddEmployee())
     }
   }, [employeeAddedDataIsSuccess, employeeAddedDataIsError])
 
